@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 
 // first Way of implementing functional component//
-function RenderMenuItem({ dish, onClick }) {
+function RenderMenuItem({ dish }) {
   return (
     <Card>
       <Link to={`/menu/${dish.id}`}>

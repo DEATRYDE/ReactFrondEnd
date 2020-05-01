@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import Home from "./HomeComponent";
-import Menu from "./MenuComponent";
-import Contact from "./ContactComponent";
-import DishDetail from "./DishdetailComponent";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
+import Menu from "./MenuComponent";
+import DishDetail from "./DishdetailComponent";
 import { DISHES } from "../shared/dishes";
+import Contact from "./ContactComponent";
+import About from "./AboutComponent";
 import { COMMENTS } from "../shared/comments";
-import { LEADERS } from "../shared/leaders";
 import { PROMOTIONS } from "../shared/promotions";
+import { LEADERS } from "../shared/leaders";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 class Main extends Component {
@@ -57,9 +58,14 @@ class Main extends Component {
           <Route
             exact
             path="/menu"
-            component={() => <Menu dishes={this.state.dishes} />}
+            component={() => <Menu dishes={this.state.dishes}></Menu>}
           />
           <Route path="/menu/:dishId" component={DishWithId} />
+          <Route
+            exact
+            path="/aboutus"
+            component={() => <About leader={this.state.leaders}></About>}
+          />
           <Route exact path="/contactus" component={Contact} />
           <Redirect to="/home" />
         </Switch>

@@ -10,13 +10,11 @@ import {
 import { Link } from "react-router-dom";
 
 function About(props) {
-  console.log(props.leader);
   const leaders = props.leader.map((leader) => {
     return <RenderLeader leader={leader} />;
   });
 
   function RenderLeader({ leader }) {
-    console.log(leader);
     return (
       <div key={leader.id} className="col-12 mt-5">
         <Media tag="li">

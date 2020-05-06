@@ -1,11 +1,17 @@
 import * as ActionTypes from "./ActionTypes";
 import { baseUrl } from "../shared/baseUrl";
 
+// function that create an action object
+// the view will trigger this action, which then be sent to reducer to update store
+//      type: get from ActionTypes
+//      payload: the data that needs to be carried in the action object to the reducer
+
 export const addComment = (comment) => ({
   type: ActionTypes.ADD_COMMENT,
   payload: comment,
 });
 
+// Action to post comment to server
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
   const newComment = {
     dishId: dishId,
@@ -25,9 +31,12 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
   })
     .then(
       (response) => {
+        // Promise resolve
         if (response.ok) {
+          // Server responses ok [200...299]
           return response;
         } else {
+          // Server responses errer [300...400]
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
@@ -36,10 +45,11 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         }
       },
       (error) => {
+        // Promise rejected
         throw error;
       }
     )
-    .then((response) => response.json())
+    .then((response) => response.json()) // After post, new comment will be returned back as response
     .then((response) => dispatch(addComment(response)))
     .catch((error) => {
       console.log("post comments", error.message);
@@ -47,16 +57,19 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     });
 };
 
+// This is a thunk :)
 export const fetchDishes = () => (dispatch) => {
   dispatch(dishesLoading(true));
 
   return fetch(baseUrl + "dishes")
     .then(
       (response) => {
+        // Promise resolve
         if (response.ok) {
+          // Server responses ok [200...299]
           return response;
         } else {
-          var error = new Error(
+          var error = new Error( // Server responses errer [300...400]
             "Error " + response.status + ": " + response.statusText
           );
           error.response = response;
@@ -65,6 +78,7 @@ export const fetchDishes = () => (dispatch) => {
         }
       },
       (error) => {
+        // Promise rejected
         var errorMessage = new Error(error.errorMessage);
         throw errorMessage;
       }
@@ -88,13 +102,17 @@ export const addDishes = (dishes) => ({
   payload: dishes,
 });
 
+// This is a thunk :)
 export const fetchComments = () => (dispatch) => {
   return fetch(baseUrl + "comments")
     .then(
       (response) => {
+        // Promise resolve
         if (response.ok) {
+          // Server responses ok [200...299]
           return response;
         } else {
+          // Server responses errer [300...400]
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
@@ -103,6 +121,7 @@ export const fetchComments = () => (dispatch) => {
         }
       },
       (error) => {
+        // Promise rejected
         var errmess = new Error(error.message);
         throw errmess;
       }
@@ -122,15 +141,19 @@ export const addComments = (comments) => ({
   payload: comments,
 });
 
+// This is a thunk :)
 export const fetchPromos = () => (dispatch) => {
   dispatch(promosLoading());
 
   return fetch(baseUrl + "promotions")
     .then(
       (response) => {
+        // Promise resolve
         if (response.ok) {
+          // Server responses ok [200...299]
           return response;
         } else {
+          // Server responses errer [300...400]
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
@@ -139,6 +162,7 @@ export const fetchPromos = () => (dispatch) => {
         }
       },
       (error) => {
+        // Promise rejected
         var errmess = new Error(error.message);
         throw errmess;
       }
@@ -162,15 +186,19 @@ export const addPromos = (promos) => ({
   payload: promos,
 });
 
+// This is a thunk :)
 export const fetchLeaders = () => (dispatch) => {
   dispatch(leadersLoading());
 
   return fetch(baseUrl + "leaders")
     .then(
       (response) => {
+        // Promise resolve
         if (response.ok) {
+          // Server responses ok [200...299]
           return response;
         } else {
+          // Server responses errer [300...400]
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
@@ -179,6 +207,7 @@ export const fetchLeaders = () => (dispatch) => {
         }
       },
       (error) => {
+        // Promise rejected
         var errmess = new Error(error.message);
         throw errmess;
       }
@@ -202,12 +231,27 @@ export const addLeaders = (leaders) => ({
   payload: leaders,
 });
 
-export const postFeedback = (feedback) => (dispatch) => {
-  const newFeedback = Object.assign(
-    { date: new Date().toISOString() },
-    feedback
-  );
+// Action to post feedback to server
+export const postFeedback = (
+  firstname,
+  lastname,
+  telnum,
+  email,
+  agree,
+  contactType,
+  message
+) => (dispatch) => {
+  const newFeedback = {
+    firstname: firstname,
+    lastname: lastname,
+    telnum: telnum,
+    email: email,
+    agree: agree,
+    contactType: contactType,
+    message: message,
+  };
 
+  // Post new comment to server
   return fetch(baseUrl + "feedback", {
     method: "POST",
     body: JSON.stringify(newFeedback),
@@ -219,25 +263,28 @@ export const postFeedback = (feedback) => (dispatch) => {
     .then(
       (response) => {
         if (response.ok) {
-          return response;
+          // Promise resolve
+          return response; // Server responses ok [200...299]
         } else {
+          // Server responses errer [300...400]
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
           error.response = response;
-
           throw error;
         }
       },
       (error) => {
-        var errorMessage = new Error(error.errorMessage);
-        throw errorMessage;
+        // Promise rejected
+        throw error;
       }
     )
-    .then((response) => response.json())
-    .then((response) => dispatch(addComment(response)))
+    .then((response) => response.json()) // After post, new comment will be returned back as response
+    .then((response) =>
+      alert("Thank you for your feedback!" + JSON.stringify(response))
+    )
     .catch((error) => {
-      console.log("Post feedback: " + error.message);
-      alert("Feedback could not be posted:\n" + error.message);
+      console.log("post feedbacks", error.message);
+      alert("Your feedback could not be posted\nError: " + error.message);
     });
 };
